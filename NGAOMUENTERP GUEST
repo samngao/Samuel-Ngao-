@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Welcome to NGAMUENTERP GUEST / KALIMANI LODGE</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700&family=Public+Sans:wght@400;600&display=swap">
+<style>
+:root{--bg:#eef1ee;--surface:#fbfcfb;--ink:#17262a;--muted:#5d6e72;--line:#d3dbd7;--accent:#0f5c5a;--accent-ink:#fff;color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1819;--surface:#172426;--ink:#e6eeec;--muted:#93a5a8;--line:#2a3b3e;--accent:#4fb3ad;--accent-ink:#06201f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1819;--surface:#172426;--ink:#e6eeec;--muted:#93a5a8;--line:#2a3b3e;--accent:#4fb3ad;--accent-ink:#06201f;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:520px;margin:0 auto;padding:28px 16px 48px}
+h1{font:700 clamp(22px,6vw,30px)/1.15 "Bricolage Grotesque","Public Sans",system-ui,sans-serif;margin:0 0 6px}
+.sub{color:var(--muted);margin:0 0 20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+label{display:block;font-size:14px;font-weight:600;margin:12px 0 4px}
+label:first-child{margin-top:0}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px}
+textarea{min-height:120px;resize:vertical}
+:is(button,input,select,textarea):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{font:600 16px "Public Sans",sans-serif;width:100%;margin-top:16px;background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:12px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);margin-top:8px;font-size:14px;padding:9px}
+.note{color:var(--muted);font-size:14px;margin-top:12px}
+#st{margin-top:12px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Welcome to NGAMUENTERP GUEST / KALIMANI LODGE</h1>
+  <p class="sub">We value your stay. Tell us what went wrong so we can put it right. Your message goes only to our management team.</p>
+  <div class="card">
+    <label for="n">Your name</label>
+    <input id="n" autocomplete="name">
+    <label for="c">Phone number or email</label>
+    <input id="c" autocomplete="off">
+    <label for="r">Room number</label>
+    <input id="r" autocomplete="off">
+    <label for="k">What is this about?</label>
+    <select id="k"><option>Water supply</option><option>Plumbing</option><option>Electricity</option><option>Roof, walls or dampness</option><option>Doors, windows or locks</option><option>Security</option><option>Pests</option><option>Cleanliness and garbage</option><option>Rent or charges</option><option>Deposit refund</option><option>Eviction or notice</option><option>Privacy (entry without notice)</option><option>Repairs not done</option><option>Neighbours or noise</option><option>Other</option></select>
+    <label for="d">Describe your concern</label>
+    <textarea id="d"></textarea>
+    <button class="btn" id="wa1" type="button">Send by WhatsApp (0792 562112)</button>
+    <button class="btn ghost" id="wa2" type="button">Send by WhatsApp (0724 525142)</button>
+    <button class="btn ghost" id="go" type="button">Send by email instead</button>
+    <button class="btn ghost" id="cp" type="button">Copy message instead</button>
+    <p class="note">WhatsApp or your email app will open with the message ready. Press Send there to finish.</p>
+    <div id="st" role="status"></div>
+  </div>
+</div>
+<script>
+(function(){
+var TO=["essiengao952@gmail.com"];
+function $(i){return document.getElementById(i)}
+function msg(){
+  var n=$("n").value.trim(),c=$("c").value.trim(),r=$("r").value.trim(),d=$("d").value.trim();
+  if(!n||!r||!d){$("st").textContent="Please add your name, room number and concern.";return null}
+  $("st").textContent="";
+  return {s:"Client concern: Room "+r+" - "+$("k").value+" - "+n,
+    b:"Name: "+n+"\nRoom number: "+r+"\nContact: "+(c||"not given")+"\nCategory: "+$("k").value+"\n\nConcern:\n"+d};
+}
+$("go").onclick=function(){
+  var m=msg();if(!m)return;
+  window.location.href="mailto:"+TO.join(",")+"?subject="+encodeURIComponent(m.s)+"&body="+encodeURIComponent(m.b);
+  $("st").textContent="If your email app did not open, use Copy message and send it to "+TO[0]+".";
+};
+var WA=["254792562112","254724525142"];
+function wa(i){var m=msg();if(!m)return;window.location.href="https://wa.me/"+WA[i]+"?text="+encodeURIComponent(m.s+"\n\n"+m.b);$("st").textContent="If WhatsApp did not open, use Copy message and send it to +"+WA[i]+"."}
+$("wa1").onclick=function(){wa(0)};
+$("wa2").onclick=function(){wa(1)};
+$("cp").onclick=function(){
+  var m=msg();if(!m)return;
+  var t="To: "+TO.join(", ")+"\nSubject: "+m.s+"\n\n"+m.b;
+  try{navigator.clipboard.writeText(t).then(function(){$("st").textContent="Copied. Paste it into an email or message to "+TO[0]+"."},function(){$("st").textContent="Copy was blocked. Please write to "+TO[0]+" directly."})}
+  catch(e){$("st").textContent="Copy was blocked. Please write to "+TO[0]+" directly."}
+};
+})();
+</script>
+</body>
+</html>
